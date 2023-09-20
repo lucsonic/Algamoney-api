@@ -1,5 +1,6 @@
 package com.lsinformatica.algamoney.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,11 @@ public class CategoriaService {
 		Page<Categoria> list = repository.findAll(pageRequest);
 
 		return list.map(x -> new CategoriaDTO(x));
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Categoria> findAll() {
+		return repository.findAll();
 	}
 
 	@Transactional(readOnly = true)

@@ -1,5 +1,6 @@
 package com.lsinformatica.algamoney.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.lsinformatica.algamoney.dto.PessoaDTO;
+import com.lsinformatica.algamoney.entities.Categoria;
 import com.lsinformatica.algamoney.entities.Pessoa;
 import com.lsinformatica.algamoney.repositories.PessoaRepository;
 import com.lsinformatica.algamoney.services.exceptions.ResourceNotFoundException;
@@ -29,6 +31,11 @@ public class PessoaService {
 		Page<Pessoa> list = repository.findAll(pageRequest);
 
 		return list.map(x -> new PessoaDTO(x));
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Pessoa> findAll() {
+		return repository.findAll();
 	}
 
 	@Transactional(readOnly = true)
@@ -74,7 +81,7 @@ public class PessoaService {
 		entity.setNumero(dto.getNumero());
 		entity.setComplemento(dto.getComplemento());
 		entity.setBairro(dto.getBairro());
-		entity.setCep(dto.getCep());
+		entity.setCep(dto.getCep().replaceAll("[^0-9]", ""));
 		entity.setCidade(dto.getCidade());
 		entity.setEstado(dto.getEstado());
 	}

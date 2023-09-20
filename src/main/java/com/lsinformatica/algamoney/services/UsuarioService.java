@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lsinformatica.algamoney.dto.UsuarioDTO;
+import com.lsinformatica.algamoney.entities.Pessoa;
 import com.lsinformatica.algamoney.entities.Usuario;
 import com.lsinformatica.algamoney.repositories.UsuarioRepository;
 import com.lsinformatica.algamoney.services.exceptions.ResourceNotFoundException;
@@ -25,6 +26,7 @@ public class UsuarioService {
 	@Autowired
 	private PasswordEncoder encoder;
 	
+	@Transactional(readOnly = true)
 	public List<Usuario> findAll() {
 		return repository.findAll();
 	}
@@ -67,7 +69,7 @@ public class UsuarioService {
 	
 	private void copyDtoToEntity(UsuarioDTO dto, Usuario entity) {
 		entity.setNome(dto.getNome());
-		entity.setCpf(dto.getCpf());
+		entity.setCpf(dto.getCpf().replaceAll("[^0-9]", ""));
 		entity.setLogin(dto.getLogin());
 		entity.setPassword(encoder.encode(dto.getPassword()));
 	}

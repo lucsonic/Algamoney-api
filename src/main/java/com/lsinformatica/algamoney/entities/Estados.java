@@ -9,13 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "categoria")
-public class Categoria {
-	
+@Table(name = "estados")
+public class Estados {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
-	private String nome;
+	private String sigla;
+	private String descricao;
 	
 	public Long getCodigo() {
 		return codigo;
@@ -23,18 +24,23 @@ public class Categoria {
 	public void setCodigo(Long codigo) {
 		this.codigo = codigo;
 	}
-	public String getNome() {
-		return nome;
+	public String getSigla() {
+		return sigla;
 	}
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setSigla(String sigla) {
+		this.sigla = sigla;
+	}
+	public String getDescricao() {
+		return descricao;
+	}
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 	
 	@Override
 	public int hashCode() {
 		return Objects.hash(codigo);
 	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -43,7 +49,9 @@ public class Categoria {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Estados other = (Estados) obj;
 		return Objects.equals(codigo, other.codigo);
 	}
+	
+	
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lsinformatica.algamoney.dto.UsuarioDTO;
+import com.lsinformatica.algamoney.entities.Pessoa;
 import com.lsinformatica.algamoney.entities.Usuario;
 import com.lsinformatica.algamoney.repositories.UsuarioRepository;
 import com.lsinformatica.algamoney.services.UsuarioService;
