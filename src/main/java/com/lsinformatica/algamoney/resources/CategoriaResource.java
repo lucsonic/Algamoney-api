@@ -1,14 +1,10 @@
 package com.lsinformatica.algamoney.resources;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,20 +13,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lsinformatica.algamoney.dto.CategoriaDTO;
 import com.lsinformatica.algamoney.entities.Categoria;
+import com.lsinformatica.algamoney.repositories.CategoriaRepository;
 import com.lsinformatica.algamoney.services.CategoriaService;
 
 @RestController
 @RequestMapping("/categorias")
 public class CategoriaResource {
-	
 	@Autowired
 	private CategoriaService service;
+	
+	private final CategoriaRepository repository;
+	
+	public CategoriaResource(CategoriaRepository repository) {
+		this.repository = repository;
+	}
 	
 //	@GetMapping
 //	public ResponseEntity<Page<CategoriaDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -57,11 +58,24 @@ public class CategoriaResource {
 		return ResponseEntity.ok().body(dto);
 	}
 	
+	@PostMapping(value = "/buscanome")
+	public ResponseEntity<CategoriaDTO> findByNome(@RequestBody CategoriaDTO requestBody) {
+		String nome = requestBody.getNome();
+		Optional<Categoria> optCategoria = repository.findByNome(nome);
+		
+		if (!optCategoria.isEmpty()) {
+			Categoria categoria = optCategoria.get();
+			CategoriaDTO dto = service.findById(categoria.getCodigo());
+        	return ResponseEntity.ok().body(dto);
+		}
+		return null;
+	}
+	
 	@PostMapping
 	public ResponseEntity<CategoriaDTO> insert(@RequestBody CategoriaDTO dto) {
-		dto = service.insert(dto);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{codigo}").buildAndExpand(dto.getCodigo()).toUri();
-		return ResponseEntity.created(uri).body(dto);
+        dto = service.insert(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{codigo}").buildAndExpand(dto.getCodigo()).toUri();
+        return ResponseEntity.created(uri).body(dto);
 	}
 	
 	@PutMapping(value = "/{codigo}")

@@ -50,7 +50,7 @@ public class UsuarioService {
 	public UsuarioDTO update(Long codigo, UsuarioDTO dto) {
 		try {
 			Usuario entity = repository.getReferenceById(codigo);
-			copyDtoToEntity(dto, entity);
+			copyDtoToEntityEdit(dto, entity);
 			entity = repository.save(entity);
 
 			return new UsuarioDTO(entity);
@@ -72,5 +72,11 @@ public class UsuarioService {
 		entity.setCpf(dto.getCpf().replaceAll("[^0-9]", ""));
 		entity.setLogin(dto.getLogin());
 		entity.setPassword(encoder.encode(dto.getPassword()));
+	}
+	
+	private void copyDtoToEntityEdit(UsuarioDTO dto, Usuario entity) {
+		entity.setNome(dto.getNome());
+		entity.setCpf(dto.getCpf().replaceAll("[^0-9]", ""));
+		entity.setLogin(dto.getLogin());
 	}
 }

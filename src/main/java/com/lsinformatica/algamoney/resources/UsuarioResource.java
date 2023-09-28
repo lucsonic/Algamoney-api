@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lsinformatica.algamoney.dto.UsuarioDTO;
-import com.lsinformatica.algamoney.entities.Pessoa;
 import com.lsinformatica.algamoney.entities.Usuario;
 import com.lsinformatica.algamoney.repositories.UsuarioRepository;
 import com.lsinformatica.algamoney.services.UsuarioService;
@@ -84,6 +83,51 @@ public class UsuarioResource {
 
         HttpStatus status = (valid) ? HttpStatus.OK : HttpStatus.UNAUTHORIZED;
         return ResponseEntity.status(status).body(valid);
-
     }
+	
+	@PostMapping("/autentica")
+	public ResponseEntity<UsuarioDTO> validarSenhaUsuario(@RequestBody UsuarioDTO requestBody) {
+		String login = requestBody.getLogin();
+		String password = requestBody.getPassword();
+		
+        Optional<Usuario> optUsuario = repository.findByLogin(login);
+        if (optUsuario.isEmpty()) {
+        	return null;
+        }
+
+        Usuario usuario = optUsuario.get();
+        boolean valid = encoder.matches(password, usuario.getPassword());
+        
+        if(valid) {
+        	UsuarioDTO dto = service.findById(usuario.getCodigo());
+        	return ResponseEntity.ok().body(dto);
+        }
+		return null;
+    }
+	
+	@PostMapping(value = "/buscalogin")
+	public ResponseEntity<UsuarioDTO> findByLogin(@RequestBody UsuarioDTO requestBody) {
+		String login = requestBody.getLogin();
+		Optional<Usuario> optUsuario = repository.findByLogin(login);
+		
+		if (!optUsuario.isEmpty()) {
+			Usuario usuario = optUsuario.get();
+			UsuarioDTO dto = service.findById(usuario.getCodigo());
+			return ResponseEntity.ok().body(dto);
+		}
+		return null;
+	}
+	
+	@PostMapping(value = "/buscacpf")
+	public ResponseEntity<UsuarioDTO> findByCpf(@RequestBody UsuarioDTO requestBody) {
+		String cpf = requestBody.getCpf().replaceAll("[^0-9]", "");
+		Optional<Usuario> optUsuario = repository.findByCpf(cpf);
+		
+		if (!optUsuario.isEmpty()) {
+			Usuario usuario = optUsuario.get();
+			UsuarioDTO dto = service.findById(usuario.getCodigo());
+			return ResponseEntity.ok().body(dto);
+		}
+		return null;
+	}
 }
